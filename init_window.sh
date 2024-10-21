@@ -1,77 +1,58 @@
 #!/bin/bash
 
-echo "Ingrese ruta donde se desplegara la arquitectura hexagonal :"
-read path
-cd $path
+set -e  # Detener la ejecución del script si ocurre cualquier error
 
-echo "Ingrese nombre de modulo, por ejemplo github.com/tu-usuario/tu-repositorio"
+echo "Ingrese ruta donde se desplegara la arquitectura hexagonal:"
+read path
+
+# Verificar si el directorio existe
+if [ ! -d "$path" ]; then
+    echo "La ruta especificada no existe. Abortando."
+    exit 1
+fi
+
+cd "$path" || { echo "No se pudo cambiar al directorio $path. Abortando."; exit 1; }
+
+echo "Ingrese nombre de modulo, por ejemplo github.com/tu-usuario/tu-repositorio:"
 read module_name
 echo "confirmar nombre? yes/no"
 read creation_confirmation
 
-rm -rf go.mod go.sum
+# Eliminar archivos si existen
+rm -f go.mod go.sum
 
-if [ "$creation_confirmation" = "yes" ]
-then
-    echo "creando go module..."
-    go mod init $module_name
+if [ "$creation_confirmation" = "yes" ]; then
+    echo "Creando go module..."
+    go mod init "$module_name" || { echo "Error al crear el módulo Go. Abortando."; exit 1; }
 else
     echo "Operación cancelada."
+    exit 0
 fi
 
-cd /home/almendra/hexaGoBuilder
-# Función para crear directorios
-echo "Ingresar el nombre de la entidad"
+cd /home/almendra/hexaGoBuilder || { echo "No se pudo cambiar al directorio /home/almendra/hexaGoBuilder. Abortando."; exit 1; }
+
+echo "Ingresar el nombre de la entidad:"
 read nameEntity
+
+# Eliminar y crear directorios con manejo de errores
 rm -rf cmd internal
-mkdir cmd cmd/api cmd/api/handlers cmd/api/handlers/$nameEntity
-mkdir internal internal/domain internal/ports internal/repositories internal/repositories/mongo internal/repositories/mongo/$nameEntity internal/services internal/services/$nameEntity
-###########################
-#- cmd
-#    - api
-#        - main.go
-#    - cli
-#    - worker
-#    - migration
-#    - handlers
-#        - $nameEntity
-#           - handler_create.go   
-#           - handler_handler.go
-#
-###########################
-# cp hex_template/main.go cmd/api/
-# cp hex_template/handler_create.go cmd/handlers/$nameEntity/
-# cp hex_template/handler_handler.go cmd/handlers/$nameEntity/
-###########################
-#- internal
-#    - domain
-#        - internal_domain.go
-#    - ports
-#        - internal_ports.go
-#    - repositories
-#        - mongo
-#           - $nameEntity
-#               - internal_repositories_mongo_insert.go
-#               - internal_repositories_mongo_repository.go
-#           - internal_repositories_mongo_connect_client.go
-#    - services
-#       - services_create.go
-#       - services_service.go
-###########################
+mkdir -p cmd/api/handlers/"$nameEntity" || { echo "Error al crear directorios cmd. Abortando."; exit 1; }
+mkdir -p internal/domain internal/ports internal/repositories/mongo/"$nameEntity" internal/services/"$nameEntity" || { echo "Error al crear directorios internal. Abortando."; exit 1; }
 
-# cp hex_template/internal_domain.go internal/domain/
-# cp hex_template/internal_ports.go internal/ports/
-# cp hex_template/internal_repositories_mongo_insert.go internal/repositories/mongo/$nameEntity/
-# cp hex_template/internal_repositories_mongo_repository.go internal/repositories/mongo/$nameEntity/
-# cp hex_template/internal_repositories_mongo_connect_client.go internal/repositories/mongo/
-# cp hex_template/services_create.go internal/services/$nameEntity/
-# cp hex_template/services_service.go internal/services/$nameEntity/
+cd "$path" || { echo "No se pudo cambiar al directorio $path. Abortando."; exit 1; }
 
-cd $path
-go get github.com/joho/godotenv
-go get -u github.com/gin-gonic/gin
-go get go.mongodb.org/mongo-driver/mongo
-cd /home/almendra/hexaGoBuilder
-go run init.go
-mv cmd $path
-mv internal $path
+# Instalar dependencias con manejo de errores
+go get github.com/joho/godotenv || { echo "Error al instalar godotenv. Abortando."; exit 1; }
+go get -u github.com/gin-gonic/gin || { echo "Error al instalar gin. Abortando."; exit 1; }
+go get go.mongodb.org/mongo-driver/mongo || { echo "Error al instalar mongo-driver. Abortando."; exit 1; }
+
+cd /home/almendra/hexaGoBuilder || { echo "No se pudo cambiar al directorio /home/almendra/hexaGoBuilder. Abortando."; exit 1; }
+
+# Ejecutar el archivo Go con manejo de errores
+go run init.go || { echo "Error al ejecutar init.go. Abortando."; exit 1; }
+
+# Mover directorios al path especificado con manejo de errores
+mv cmd "$path" || { echo "Error al mover el directorio cmd. Abortando."; exit 1; }
+mv internal "$path" || { echo "Error al mover el directorio internal. Abortando."; exit 1; }
+
+echo "Script ejecutado exitosamente."
