@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "Ingrese ruta donde se desplegara la arquitectura hexagonal :"
+read path
+cd $path
+
 echo "Ingrese nombre de modulo, por ejemplo github.com/tu-usuario/tu-repositorio"
 read module_name
 echo "confirmar nombre? yes/no"
@@ -15,6 +19,7 @@ else
     echo "Operación cancelada."
 fi
 
+cd /home/almendra/hexaGoBuilder
 # Función para crear directorios
 echo "Ingresar el nombre de la entidad"
 read nameEntity
@@ -62,8 +67,11 @@ mkdir internal internal/domain internal/ports internal/repositories internal/rep
 # cp hex_template/services_create.go internal/services/$nameEntity/
 # cp hex_template/services_service.go internal/services/$nameEntity/
 
+cd $path
 go get github.com/joho/godotenv
 go get -u github.com/gin-gonic/gin
 go get go.mongodb.org/mongo-driver/mongo
-
+cd /home/almendra/hexaGoBuilder
 go run init.go
+mv cmd $path
+mv internal $path

@@ -80,12 +80,12 @@ func main() {
 		},
 		{
 			NameTemplate: hc,
-			Route:        "cmd/api/handlers/" + upperCaseEntity,
+			Route:        "cmd/api/handlers/" + lowerCaseEntity,
 			NameFile:     "create",
 		},
 		{
 			NameTemplate: hh,
-			Route:        "cmd/api/handlers/" + upperCaseEntity,
+			Route:        "cmd/api/handlers/" + lowerCaseEntity,
 			NameFile:     "handler",
 		},
 		{
@@ -105,22 +105,22 @@ func main() {
 		},
 		{
 			NameTemplate: mi,
-			Route:        "internal/repositories/mongo/" + upperCaseEntity,
+			Route:        "internal/repositories/mongo/" + lowerCaseEntity,
 			NameFile:     "insert",
 		},
 		{
 			NameTemplate: mr,
-			Route:        "internal/repositories/mongo/" + upperCaseEntity,
+			Route:        "internal/repositories/mongo/" + lowerCaseEntity,
 			NameFile:     "repository",
 		},
 		{
 			NameTemplate: sc,
-			Route:        "internal/services/" + upperCaseEntity,
+			Route:        "internal/services/" + lowerCaseEntity,
 			NameFile:     "create",
 		},
 		{
 			NameTemplate: ss,
-			Route:        "internal/services/" + upperCaseEntity,
+			Route:        "internal/services/" + lowerCaseEntity,
 			NameFile:     "service",
 		},
 	}
