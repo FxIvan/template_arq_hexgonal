@@ -8,7 +8,7 @@ import (
 )
 
 type Service struct {
-	Repo ports.PlayerRepository
+	Repo ports.{{.EntityName}}Repository
 }
 
 `

@@ -1,7 +1,7 @@
 package hex_template
 
 const ServicesCreate = `
-	package player
+	package {{.NamePackage}}
 
 	import (
 		"time"
